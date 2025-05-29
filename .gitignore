@@ -1,0 +1,32 @@
+# IDE extensions
+.vscode
+*/*/.vscode
+.vscode/*
+.idea/*
+*.iml
+
+# Node dependency directories
+node_modules/
+*/node_modules
+node_module
+.node_repl_history
+
+# Optional npm cache directory
+.npm
+
+# Optional angular cache
+*/.angular
+.angular
+
+
+# Optional eslint cache
+.eslintcache
+
+# macOS files
+.DS_Store
+*/.DS_Store
+
+# not required Directories
+temp/
+Books/
+Syllabus/
