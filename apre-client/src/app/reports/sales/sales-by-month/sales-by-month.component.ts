@@ -16,7 +16,7 @@ import { environment } from '../../../../environments/environment';
       <form class="form" [formGroup]="monthForm" (ngSubmit)="onSubmit()">
         <div class="form__group">
           <label for="month">Select Month:</label>
-          <select class="select" formControlName="month" id="month" name="month" request>
+          <select class="select" formControlName="month" id="month" name="month" required>
             <option value="" disabled selected>Select a month</option>
             <option value="1">January</option>
             <option value="2">February</option>
@@ -64,11 +64,11 @@ export class SalesByMonthComponent {
 
   get selectedMonth(): string {
     const monthNum = this.monthForm.controls['month'].value;
-    return monthNum ? this.monthNames[monthNum] : '';
+    return monthNum ? this.monthNames[+monthNum] : '';
   }
 
   monthForm = this.fb.group({
-    month: [null, Validators.required]
+    month: ['', Validators.required]
   })
 
   constructor(private fb: FormBuilder, private http: HttpClient) {

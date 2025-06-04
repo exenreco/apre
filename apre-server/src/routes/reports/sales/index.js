@@ -78,6 +78,15 @@ router.get('/regions/:region', (req, res, next) => {
   }
 });
 
+/**
+ * @description
+ * GET /sales-by-month
+ * Fetches sales data for a specific month.
+ * Example:
+ * fetch('/sales-by-month?month=8')
+ *  .then(response => response.json())
+ *  .then(data => console.log(data));
+ */
 router.get('/sales-by-month', (req, res, next) => {
   try {
     const month = req.query.month;
@@ -116,6 +125,95 @@ router.get('/sales-by-month', (req, res, next) => {
 
   } catch (err) {
     console.error('Error getting sales data by month: ', err);
+    next(err);
+  }
+});
+
+/**
+ * @package Week 2 - major Development
+ *
+ * @developer Exenreco Bell
+ *
+ * @description
+ *
+ * GET /products
+ *
+ * Fetches a list of distinct product names.
+ *
+ * Example:
+ * fetch('/products')
+ *   .then(response => response.json())
+ *   .then(data => console.log(data));
+ */
+router.get('/products', (req, res, next) => {
+  try {
+    mongo(async db => {
+      const products = await db.collection('sales').distinct('product');
+      res.send(products);
+    }, next);
+  } catch (err) {
+    console.error('Error getting products: ', err);
+    next(err);s
+  }
+});
+
+/**
+ * @package Week 2 - major Development
+ *
+ * @developer Exenreco Bell
+ *
+ * @description
+ *
+ * GET /sales-by-region-and-product
+ *
+ * Fetches sales data filtered by region and product.
+ *
+ * Example:
+ * fetch('/sales-by-region-and-product?region=north&product=widget')
+ *   .then(response => response.json())
+ *   .then(data => console.log(data));
+ */
+router.get('/sales-by-region-and-product', (req, res, next) => {
+  try {
+    const region = req.query.region;
+    const product = req.query.product;
+
+    // Validate parameters
+    if (!region || !product) {
+      return res.status(400).send('Both region and product parameters are required');
+    }
+
+    mongo(async db => {
+      const salesReport = await db.collection('sales').aggregate([
+        // Match specific region and product
+        {
+          $match: {
+            region: region,
+            product: product
+          }
+        },
+        // Project needed fields
+        {
+          $project: {
+            _id: 0,
+            region: 1,
+            salesperson: 1,
+            product: 1,
+            amount: 1
+          }
+        },
+        // Sort results
+        {
+          $sort: {
+            salesperson: 1
+          }
+        }
+      ]).toArray();
+
+      res.send(salesReport);
+    }, next);
+  } catch (err) {
+    console.error('Error getting sales by region and product: ', err);
     next(err);
   }
 });

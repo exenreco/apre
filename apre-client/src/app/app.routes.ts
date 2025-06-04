@@ -26,6 +26,7 @@ import { ChannelRatingByMonthComponent } from './reports/customer-feedback/chann
 import { CustomerFeedbackComponent } from './reports/customer-feedback/customer-feedback.component';
 import { SalesByRegionTabularComponent } from './reports/sales/sales-by-region-tabular/sales-by-region-tabular.component';
 import { SalesByMonthComponent } from './reports/sales/sales-by-month/sales-by-month.component';
+import { SalesByRegionAndProductComponent } from './reports/sales/sales-by-region-and-product/sales-by-region-and-product.component';
 
 // Export user-management routes
 export const userManagementRoutes: Routes = [
@@ -61,6 +62,10 @@ export const salesReportRoutes: Routes = [
   { // from demo
     path: 'sales-by-month',
     component: SalesByMonthComponent
+  },
+  { // Contributor: Exenreco Bell
+    path: 'sales-by-region-and-product',
+    component: SalesByRegionAndProductComponent
   }
 ];
 
