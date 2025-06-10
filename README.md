@@ -1,4 +1,4 @@
-# WEB 450 - MAstering the MEAN Stack Boot-camp
+# WEB 450 - Mastering the MEAN Stack Boot-camp
 
 <h2>APRE Project</h2>
 

@@ -30,7 +30,8 @@ describe('ChannelRatingByMonthComponent', () => {
 
   it('should initialize the monthForm with a null value', () => {
     const monthControl = component.monthForm.controls['month'];
-    expect(monthControl.value).toBeNull();
+    // update test to check for empty string instead of null value
+    expect(monthControl.value).toBe('');
     expect(monthControl.valid).toBeFalse();
   });
 

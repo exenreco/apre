@@ -22,6 +22,13 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
         <div class="form__group">
           <label class="label" for="month">Month</label>
           <select class="select" formControlName="month" id="month" name="month">
+            <!--
+              Exenreco's Minor development week 3:
+                Add placeholder option - to Provide clear user instruction before selection
+                  - disabled - prevents selecting the placeholder option
+                  - selected - makes it show by default
+            -->
+            <option value="" disabled selected>Select Month</option>
             @for(month of months; track month) {
               <option value="{{ month.value }}">{{ month.name }}</option>
             }
@@ -63,7 +70,8 @@ export class ChannelRatingByMonthComponent {
   errorMessage: string;
 
   monthForm = this.fb.group({
-    month: [null, Validators.compose([Validators.required])]
+    // Exenreco's Minor development week 3: update null to empty string to avoid null value in select
+    month: ['', Validators.compose([Validators.required])]
   });
 
   constructor(private http: HttpClient, private fb: FormBuilder, private cdr: ChangeDetectorRef) {
