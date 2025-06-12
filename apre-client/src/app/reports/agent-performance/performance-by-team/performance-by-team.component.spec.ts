@@ -1,4 +1,3 @@
-// performance-by-team.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PerformanceByTeamComponent } from './performance-by-team.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -39,46 +38,37 @@ describe('PerformanceByTeamComponent', () => {
   });
 
   it('should transform data for table view with call duration', () => {
-    component.performanceData = [
-      {
-        agentId: 1001,
-        name: 'Jane Smith',
-        phone: '555-5678',
-        email: 'jane@example.com',
-        region: 'East',
-        callDuration: 120
-      }
-    ];
+    component.performanceData = [{
+      team: 'Test',
+      region: 'East',
+      callDuration: 120,
+      resolutionTime: 200,
+    }];
 
     component.tableView();
 
-    expect(component.performanceData[0]['Name']).toBe('Jane Smith');
-    expect(component.performanceData[0]['Phone']).toBe('555-5678');
-    expect(component.performanceData[0]['Email']).toBe('jane@example.com');
+    expect(component.performanceData[0]['Team']).toBe('Test');
     expect(component.performanceData[0]['Region']).toBe('East');
     expect(component.performanceData[0]['Call Duration']).toBe(120);
+    expect(component.performanceData[0]['Resolution Time']).toBe(200);
   });
 
-  it('should handle missing agent fields gracefully', () => {
-    component.performanceData = [
-      { agentId: 1002, callDuration: 45 }
-    ];
+  it('should handle missing performance data fields', () => {
+    component.performanceData = [{ team: 'Test', callDuration: 45 }];
 
     component.tableView();
 
-    expect(component.performanceData[0]['agentId']).toBe(1002);
-    expect(component.performanceData[0]['Name']).toBe('N/A');
-    expect(component.performanceData[0]['Phone']).toBe('N/A');
-    expect(component.performanceData[0]['Email']).toBe('N/A');
+    expect(component.performanceData[0]['Team']).toBe('Test');
     expect(component.performanceData[0]['Region']).toBe('N/A');
     expect(component.performanceData[0]['Call Duration']).toBe(45);
+    expect(component.performanceData[0]['Resolution Time']).toBe('N/A');
   });
 
   it('should sort by call duration descending', () => {
     component.performanceData = [
-      { agentId: 1003, callDuration: 200 },
-      { agentId: 1004, callDuration: 350 },
-      { agentId: 1005, callDuration: 150 }
+      { team:'test', callDuration: 200 },
+      { team:'test', callDuration: 350 },
+      { team:'test', callDuration: 150 }
     ];
 
     component.performanceData.sort((a, b) => b.callDuration - a.callDuration);

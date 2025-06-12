@@ -1,9 +1,18 @@
-import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TableComponent } from '../../../shared/table/table.component';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 
+/**
+ * Week 3: MAjor Development
+ * Task : Create an API to fetch agent performance data by team
+ * and build an Angular component to display agent performance
+ * by team using ChartComponent or TableComponent with 3 unit
+ * tests each.
+ *
+ * @Dev Exenreco Bell
+ */
 @Component({
   selector: 'app-performance-by-team',
   standalone: true,
@@ -37,7 +46,7 @@ import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
             <app-table
               [data]="performanceData"
               [title]="'Performance report for team: ' + selectedTeam"
-              [headers]="['Team', 'Name',  'Email', 'Phone', 'Region', 'Call Duration']"
+              [headers]="['Team', 'Region', 'Call Duration', 'Resolution Time']"
             ></app-table>
           </div>
         </div>
@@ -57,7 +66,7 @@ export class PerformanceByTeamComponent implements AfterViewInit {
     team: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private cdr: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     // Fetch the list of teams
     this.http.get(`${environment.apiBaseUrl}/reports/agent-performance/teams`).subscribe({
       next: (data: any) => this.teams = data,
@@ -73,11 +82,9 @@ export class PerformanceByTeamComponent implements AfterViewInit {
     for (let data of this.performanceData) {
       // Map directly to the expected table fields
       data['Team'] = data['team'] || 'N/A';
-      data['Name'] = data['name'] || 'N/A';
-      data['Email'] = data['email'] || 'N/A';
-      data['Phone'] = data['phone'] || 'N/A';
       data['Region'] = data['region'] || 'N/A';
       data['Call Duration'] = data['callDuration'] || 'N/A';
+      data['Resolution Time'] = data['resolutionTime'] || 'N/A';
     }
     console.log('performance data:', this.performanceData);
   }
@@ -97,9 +104,6 @@ export class PerformanceByTeamComponent implements AfterViewInit {
       next: (data: any) => {
         this.performanceData = data;
         this.tableView();
-        // Trigger change detection
-        this.cdr.markForCheck();
-        this.cdr.detectChanges();
       },
       error: (err) => console.error('Error fetching data from server: ', err)
     });

@@ -93,11 +93,30 @@ router.get('/call-duration-by-date-range', (req, res, next) => {
   }
 });
 
-
+/**
+ * @description
+ *
+ * Week 3: MAjor Development
+ *
+ * Task : Create an API to fetch agent performance data by team and build an
+ * Angular component to display agent performance by team using ChartComponent
+ * or TableComponent with 3 unit tests each.
+ *
+ * GET /team
+ *
+ * Fetches teams for the agentPerformance prototype
+ *
+ * Example:
+ * fetch('/team')
+ *  .then(response => response.json())
+ *  .then(data => console.log(data));
+ *
+ * @Dev Exenreco Bell
+ */
 router.get('/teams', (req, res, next) => {
   try {
     mongo(async db => {
-      const teams = await db.collection('agents').distinct('team');
+      const teams = await db.collection('agentPerformance').distinct('team');
       res.send(teams);
     }, next);
   } catch (err) {
@@ -106,71 +125,71 @@ router.get('/teams', (req, res, next) => {
   }
 });
 
+/**
+ * @description
+ *
+ * Week 3: MAjor Development
+ *
+ * Task : Create an API to fetch agent performance data by team and build an
+ * Angular component to display agent performance by team using ChartComponent
+ * or TableComponent with 3 unit tests each.
+ *
+ * GET /performance-by-team
+ *
+ * Fetches performance data form agentPerformance
+ *
+ * Example:
+ * fetch('/performance-by-team?team=Team Name')
+ *  .then(response => response.json())
+ *  .then(data => console.log(data));
+ *
+ * @Dev Exenreco Bell
+ */
 router.get('/performance-by-team', (req, res, next) => {
   try {
     const { team } = req.query;
-
-    if (!team) {
-      return next(createError(400, 'Team is required'));
-    }
-
-    console.log(`Fetching performance for team: ${team}`);
+    if (!team) return next(createError(400, 'Team is required'));
 
     mongo(async db => {
-      const data = await db.collection('agents').aggregate([
-        { $match: { team: team } },
-        {
-          $lookup: {
+      const data = await db.collection('agentPerformance').aggregate([
+        { $match: { team } },
+        { $project: {
+            team: 1,
+            region: 1,
+            callDuration: 1,
+            resolutionTime: 1,
+          }
+        },
+        { $lookup: {
             from: 'agentPerformance',
             localField: 'agentId',
             foreignField: 'agentId',
             as: 'performanceData'
           }
         },
-        {
-          $unwind: {
-            path: '$performanceData',
-            preserveNullAndEmptyArrays: true
+        { $unwind: { path: '$performanceData', preserveNullAndEmptyArrays: true } },
+        { $group: {
+          _id: {
+            team: '$team',
+            region: '$region',
+            callDuration: '$callDuration',
+            resolutionTime: '$resolutionTime'
           }
-        },
-        {
-          $group: {
-            _id: {
-              team: '$team',
-              name: '$name',
-              phone: '$phone',
-              email: '$email',
-              region: '$region',
-              agentId: '$agentId',
-            },
-            totalCallDuration: {
-              $sum: {
-                $ifNull: ['$performanceData.callDuration', 0]
-              }
-            }
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            team: '$_id.team',
-            name: '$_id.name',
-            phone: '$_id.phone',
-            email: '$_id.email',
-            region: '$_id.region',
-            agentId: '$_id.agentId',
-            callDuration: '$totalCallDuration'
-          }
-        },
+        }},
+        { $project: {
+          _id: 0,
+          team: '$_id.team',
+          region: '$_id.region',
+          callDuration: '$_id.callDuration',
+          resolutionTime: '$_id.resolutionTime'
+        }},
         { $sort: { callDuration: -1 } }
       ]).toArray();
 
       res.send(data);
     }, next);
-  } catch (err) {
-    console.error('Error in /performance-by-team', err);
-    next(err);
   }
+  catch (err) { next(err); }
 });
 
 module.exports = router;
