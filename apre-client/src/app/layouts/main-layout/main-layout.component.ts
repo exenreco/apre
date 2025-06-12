@@ -313,7 +313,8 @@ export class MainLayoutComponent {
   ];
 
   agentPerformanceReports = [
-    { name: 'Call Duration by Date Range', url: '/reports/agent-performance/call-duration-by-date-range' }
+    { name: 'Call Duration by Date Range', url: '/reports/agent-performance/call-duration-by-date-range' },
+    { name: 'Performance By Team', url: '/reports/agent-performance/performance-by-team' } // Contributor: Exenreco Bell
     // Add more reports as needed
   ];
 

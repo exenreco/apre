@@ -37,8 +37,7 @@ import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
         <div class="form__actions">
           <input
             type="submit"
-            class="button
-            button--primary"
+            class="button button--primary"
             value="Generate Report"
             [disabled]="regionAndProductForm.invalid" />
         </div>
@@ -124,8 +123,6 @@ export class SalesByRegionAndProductComponent implements AfterViewInit {
   salesAmount: number[] = [];
 
   salesPerson: string[] = [];
-
-  chartLabels: string[] = [];
 
   viewMode: 'table' | 'chart' = 'table';
 
