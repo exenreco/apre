@@ -93,4 +93,84 @@ router.get('/call-duration-by-date-range', (req, res, next) => {
   }
 });
 
+
+router.get('/teams', (req, res, next) => {
+  try {
+    mongo(async db => {
+      const teams = await db.collection('agents').distinct('team');
+      res.send(teams);
+    }, next);
+  } catch (err) {
+    console.error('Error in /teams', err);
+    next(err);
+  }
+});
+
+router.get('/performance-by-team', (req, res, next) => {
+  try {
+    const { team } = req.query;
+
+    if (!team) {
+      return next(createError(400, 'Team is required'));
+    }
+
+    console.log(`Fetching performance for team: ${team}`);
+
+    mongo(async db => {
+      const data = await db.collection('agents').aggregate([
+        { $match: { team: team } },
+        {
+          $lookup: {
+            from: 'agentPerformance',
+            localField: 'agentId',
+            foreignField: 'agentId',
+            as: 'performanceData'
+          }
+        },
+        {
+          $unwind: {
+            path: '$performanceData',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $group: {
+            _id: {
+              team: '$team',
+              name: '$name',
+              phone: '$phone',
+              email: '$email',
+              region: '$region',
+              agentId: '$agentId',
+            },
+            totalCallDuration: {
+              $sum: {
+                $ifNull: ['$performanceData.callDuration', 0]
+              }
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            team: '$_id.team',
+            name: '$_id.name',
+            phone: '$_id.phone',
+            email: '$_id.email',
+            region: '$_id.region',
+            agentId: '$_id.agentId',
+            callDuration: '$totalCallDuration'
+          }
+        },
+        { $sort: { callDuration: -1 } }
+      ]).toArray();
+
+      res.send(data);
+    }, next);
+  } catch (err) {
+    console.error('Error in /performance-by-team', err);
+    next(err);
+  }
+});
+
 module.exports = router;
