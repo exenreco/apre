@@ -70,7 +70,7 @@ export class PerformanceByTeamComponent implements AfterViewInit {
     // Fetch the list of teams
     this.http.get(`${environment.apiBaseUrl}/reports/agent-performance/teams`).subscribe({
       next: (data: any) => this.teams = data,
-      error: (err) => console.error('Error fetching regions:', err)
+      error: (err) => console.error('Error fetching teams:', err)
     });
   }
 
