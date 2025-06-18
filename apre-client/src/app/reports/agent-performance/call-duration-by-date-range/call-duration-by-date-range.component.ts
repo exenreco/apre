@@ -17,7 +17,18 @@ import { environment } from '../../../../environments/environment';
         <div class="calendar-form__group">
           <div class="calendar-form__item">
             <label class="calendar-form__label" for="startDate">Start Date:</label>
-            <app-calendar (dateSelected)="onStartDateSelected($event)"></app-calendar>
+            <!--
+              @dev: Exenreco Bell
+
+              Week 4 - Minor development
+
+              Add a placeholder to the start date label in the CallDurationByDateRangeComponent.
+              Placeholder text should be "Select start date".
+
+              @description - the placeholder was added to ensure consistency throughout the project,
+              which is a common practice when working with design principles
+            -->
+            <app-calendar (dateSelected)="onStartDateSelected($event)" placeholder="Select start date"></app-calendar>
           </div>
           <div class="calendar-form__item">
             <label class="calendar-form__label" for="endDate">End Date:</label>

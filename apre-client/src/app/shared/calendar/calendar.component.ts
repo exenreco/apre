@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy, ChangeDetectorRef, Input} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -9,11 +9,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   providers: [DatePipe],
   template: `
     <div class="date-picker">
+      <!--
+        @dev: Exenreco Bell
+
+        Week 4 - Minor development
+
+        Add a placeholder to the start date label in the CallDurationByDateRangeComponent.
+        Placeholder text should be "Select start date".
+
+        @description - the placeholder was added to ensure consistency throughout the project,
+        which is a common practice when working with design principles
+      -->
       <input
         type="text"
         class="input"
         [ngClass]="{ 'input--invalid': isInvalidDate }"
-        placeholder="MM/DD/YYYY"
+        [placeholder]="placeholder"
         (focus)="showCalendar = true"
         [(ngModel)]="selectedDate"
         (ngModelChange)="onDateChange($event)"
@@ -121,6 +132,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent {
+  /*
+    @dev: Exenreco Bell
+
+    Week 4 - Minor development
+
+    Add a placeholder to the start date label in the CallDurationByDateRangeComponent.
+    Placeholder text should be "Select start date".
+
+    @description - the placeholder was added to ensure consistency throughout the project,
+    which is a common practice when working with design principles
+  */
+  @Input() placeholder: string = 'MM/DD/YYYY';
+
   @Output() dateSelected = new EventEmitter<Date>();
   currentDate = new Date();
   daysInMonth: (number | null)[] = [];
